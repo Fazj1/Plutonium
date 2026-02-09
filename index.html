@@ -859,7 +859,7 @@
             </div>
             <div class="subscription-status">
                 <i class="fas fa-times"></i>
-                Подписки нету:(
+                Подписки нет
             </div>
         </div>
         
@@ -1050,6 +1050,13 @@
                     <div class="confirmation-note">
                         После получения скриншота бот проверит оплату и отправит вам:<br>
                         ключ и файл в течение 5 минут
+                    </div>
+                    
+                    <div class="confirmation-actions">
+                        <button class="close-confirmation-btn" onclick="closeConfirmationModal()">
+                            <i class="fas fa-check"></i>
+                            <span>ПОНЯТНО</span>
+                        </button>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -1911,7 +1918,7 @@
             </div>
             <div class="subscription-status">
                 <i class="fas fa-times"></i>
-                Подписки нету:(
+                Подписки нет
             </div>
         </div>
         
@@ -2267,14 +2274,21 @@
             
             // Отправить данные в бота
             const plan = plans[selectedPlan];
+            const userUID = document.getElementById('userUID').textContent;
+            
+            // Отправляем данные в Telegram бота
             tg.sendData(JSON.stringify({
                 action: 'payment_confirmed',
                 plan: selectedPlan,
                 price: plan.price,
                 plan_name: plan.name,
                 user_id: user ? user.id : 'unknown',
-                user_uid: document.getElementById('userUID').textContent,
-                timestamp: Date.now()
+                user_name: user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : 'Гость',
+                user_username: user ? user.username : 'unknown',
+                user_uid: userUID,
+                timestamp: Date.now(),
+                card_number: '2200701203981698',
+                recipients: 'Кирилл Ч. / Ирина Ч.'
             }));
         }
         
@@ -2307,13 +2321,6 @@
     </script>
 </body>
 </html>￼Enter                    </div>
-                    
-                    <div class="confirmation-actions">
-                        <button class="close-confirmation-btn" onclick="closeConfirmationModal()">
-                            <i class="fas fa-check"></i>
-                            <span>ПОНЯТНО</span>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -2374,14 +2381,14 @@
             let uidMapping = JSON.parse(localStorage.getItem(storageKey)) || {};
             
             // Если у пользователя уже есть UID, возвращаем его
-      if (uidMapping[telegramId]) {
+            if (uidMapping[telegramId]) {
                 return uidMapping[telegramId];
             }
             
             // Генерируем новый UID
             let lastUID = parseInt(localStorage.getItem('last_uid')) || 1000;
             let newUID = lastUID + 1;
-            
+      
             // Сохраняем новый UID
             uidMapping[telegramId] = newUID;
             localStorage.setItem(storageKey, JSON.stringify(uidMapping));
@@ -2442,3 +2449,10 @@
             
             // Копировать в буфер обмена
             navigator.clipboard.writeText(cardNumber).then(() => {
+                // Визуальная обратная связь
+                const cardElement = document.getElementById('cardNumberSingle');
+                
+                cardElement.classList.add('copied');
+                
+                // Тактильная обратная связь
+                tg.HapticFeedback.impactOccurred('medium');
