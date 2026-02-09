@@ -1,4 +1,4 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -41,6 +41,66 @@
             margin: 0 auto;
             padding: 0;
             overflow-x: hidden;
+        }
+        
+        /* ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ */
+        .profile-section {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(99, 102, 241, 0.05);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+        
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--light);
+        }
+        
+        .profile-username {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+        
+        .profile-uid {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--primary);
         }
         
         /* HEADER */
@@ -549,28 +609,21 @@
         .recipient-item {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
-            padding: 16px;
+            padding: 20px;
             border: 1px solid var(--border);
+            text-align: center;
         }
         
         .recipient-names {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
-            color: var(--light);
-            margin-bottom: 12px;
-            text-align: center;
+            color: var(--secondary);
+            margin-bottom: 8px;
         }
         
-        .recipient-number {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--secondary);
-            font-family: 'Courier New', monospace;
-            text-align: center;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            letter-spacing: 1px;
+        .recipient-note {
+            font-size: 14px;
+            color: var(--gray);
         }
         
         /* ACTION BUTTONS */
@@ -768,6 +821,21 @@
 </head>
 <body>
     <div class="app">
+        <!-- ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ -->
+        <div class="profile-section" id="profileSection">
+            <div class="profile-avatar" id="profileAvatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="profile-info">
+                <div class="profile-name" id="profileName">Гость</div>
+                <div class="profile-username" id="profileUsername">@username</div>
+                <div class="profile-uid">
+                    <i class="fas fa-id-card"></i>
+                    <span>UID: <span id="userUID">1000</span></span>
+                </div>
+            </div>
+        </div>
+        
         <!-- ЗАГОЛОВОК -->
         <div class="header">
             <div class="logo">
@@ -910,7 +978,7 @@
                             </div>
                             <div class="recipient-item">
                                 <div class="recipient-names">Кирилл Ч. / Ирина Ч.</div>
-                                <div class="recipient-number">2200 7012 0398 1698</div>
+                                <div class="recipient-note">Карта указана выше</div>
                             </div>
                         </div>
                     </div>
@@ -975,7 +1043,7 @@
         tg.setHeaderColor('#0f172a');
         tg.setBackgroundColor('#0f172a');
         
-        // Данные
+        // Данные пользователя
         const user = tg.initDataUnsafe.user;
         let selectedPlan = '7';
         
@@ -985,6 +1053,59 @@
             '30': { price: 449, name: '30 дней', period: '30 дней доступа' },
             'forever': { price: 949, name: 'Навсегда', period: 'постоянный доступ' }
         };
+        
+        // Инициализация профиля
+        function initProfile() {
+            if (user) {
+                // Обновляем имя
+                if (user.first_name || user.last_name) {
+                    const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+                    document.getElementById('profileName').textContent = fullName;
+                }
+                
+                // Обновляем юзернейм
+                if (user.username) {
+                    document.getElementById('profileUsername').textContent = `@${user.username}`;
+                } else {
+                    document.getElementById('profileUsername').style.display = 'none';
+                }
+                
+                // Обновляем аватар
+                if (user.photo_url) {
+                    const avatarElement = document.getElementById('profileAvatar');
+                    avatarElement.innerHTML = `<img src="${user.photo_url}" alt="Аватар">`;
+                }
+                
+                // Генерируем или получаем UID
+                let userId = user.id.toString();
+                let uid = getOrCreateUID(userId);
+                
+                // Обновляем UID в интерфейсе
+                document.getElementById('userUID').textContent = uid;
+            }
+        }
+        
+        // Система UID
+        function getOrCreateUID(telegramId) {
+            const storageKey = 'user_uid_mapping';
+            let uidMapping = JSON.parse(localStorage.getItem(storageKey)) || {};
+            
+            // Если у пользователя уже есть UID, возвращаем его
+            if (uidMapping[telegramId]) {
+                return uidMapping[telegramId];
+            }
+            
+            // Генерируем новый UID
+            let lastUID = parseInt(localStorage.getItem('last_uid')) || 1000;
+            let newUID = lastUID + 1;
+            
+            // Сохраняем новый UID
+            uidMapping[telegramId] = newUID;
+            localStorage.setItem(storageKey, JSON.stringify(uidMapping));
+            localStorage.setItem('last_uid', newUID.toString());
+            
+            return newUID;
+        }
         
         // Выбор тарифа
         document.querySelectorAll('.tariff-card').forEach(card => {
@@ -1073,6 +1194,7 @@
                 price: plan.price,
                 plan_name: plan.name,
                 user_id: user ? user.id : 'unknown',
+                user_uid: document.getElementById('userUID').textContent,
                 timestamp: Date.now()
             }));
         }
@@ -1089,6 +1211,7 @@
         }
         
         // Инициализация
+        initProfile();
         updateBuyButton();
         
         // Приветственное сообщение
