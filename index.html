@@ -1050,6 +1050,1058 @@
                     <div class="confirmation-note">
                         После получения скриншота бот проверит оплату и отправит вам:<br>
                         ключ и файл в течение 5 минут
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plutonium Premium</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .app {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        /* ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ */
+        .profile-section {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(99, 102, 241, 0.05);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+            position: relative;
+        }
+        
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--light);
+        }
+        
+        .profile-username {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+        
+        .profile-uid {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        /* НАДПИСЬ "ПОДПИСКИ НЕТУ" - МАЛЕНЬКАЯ */
+        .subscription-status {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .subscription-status i {
+            margin-right: 4px;
+            font-size: 10px;
+        }
+        
+        /* HEADER */
+        .header {
+            padding: 24px 20px 16px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.1) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+        }
+        
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--light), #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .nonroot-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 15px;
+            color: var(--gray);
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        /* КОМПАКТНЫЕ КАРТОЧКИ ТАРИФОВ */
+        .tariff-section {
+            padding: 24px 20px 20px;
+        }
+        
+        .tariff-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--light);
+        }
+        
+        .tariff-title i {
+            color: var(--primary);
+        }
+        
+        .tariff-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .tariff-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+        
+        .tariff-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tariff-card.selected {
+            border-color: var(--secondary);
+            background: rgba(16, 185, 129, 0.08);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
+        }
+        
+        .tariff-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .tariff-period {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--light);
+        }
+        
+        .tariff-period i {
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+            color: var(--primary);
+        }
+        
+        .tariff-description {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .tariff-price {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        
+        .price-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--secondary);
+            line-height: 1;
+        }
+        
+        .price-note {
+            font-size: 13px;
+            color: var(--gray);
+            text-align: right;
+        }
+        
+        .tariff-badge {
+            position: absolute;
+            top: -8px;
+            right: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        
+        .savings-badge {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+        
+        /* БОЛЬШАЯ КНОПКА */
+        .main-action {
+            padding: 20px;
+            position: sticky;
+            bottom: 0;
+            background: linear-gradient(to top, var(--dark) 80%, transparent);
+            border-top: 1px solid var(--border);
+        }
+        
+        .primary-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 22px;
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+            letter-spacing: 0.5px;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.5);
+        }
+        
+        .primary-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* ПЛАТЕЖНОЕ МОДАЛЬНОЕ ОКНО */
+        .payment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .payment-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .payment-header {
+            padding: 28px 24px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            color: var(--light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .payment-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--light);
+        }
+        
+        .payment-subtitle {
+            font-size: 15px;
+            color: var(--gray);
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .payment-content {
+            padding: 24px;
+        }
+        
+        .order-summary {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .summary-amount {
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--secondary);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        
+        .summary-period {
+            font-size: 16px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .payment-instruction {
+            margin-bottom: 28px;
+        }
+        
+        .instruction-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--light);
+        }
+        
+        .instruction-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            font-size: 15px;
+            color: var(--light);
+        }
+        
+        .step-text strong {
+            color: var(--secondary);
+        }
+        
+        /* TINKOFF CARD */
+        .bank-card {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border-radius: 20px;
+            padding: 24px;
+            margin: 28px 0;
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bank-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(255, 107, 0, 0.1), transparent);
+            border-radius: 0 0 0 100px;
+        }
+        
+        .bank-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .bank-logo {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #ff6b00, #ff8c00);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .bank-info h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff6b00;
+            margin-bottom: 4px;
+        }
+        
+        .bank-info p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .card-number-single {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-align: center;
+            color: white;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .card-number-single:hover {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 107, 0, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .card-number-single.copied {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+        
+        .copy-indicator {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+        }
+        
+        .card-number-single.copied .copy-indicator {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .copy-icon {
+            font-size: 18px;
+            opacity: 0.7;
+            transition: all 0.3s;
+        }
+        
+        .card-number-single:hover .copy-icon {
+            opacity: 1;
+        }
+        
+        .card-number-single.copied .copy-icon {
+            color: var(--success);
+        }
+        
+        /* ПОЛУЧАТЕЛИ */
+        .recipients-section {
+            margin-top: 20px;
+        }
+        
+        .recipients-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .recipient-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .recipient-names {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+        
+        .recipient-note {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        /* ACTION BUTTONS */
+        .payment-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 28px;
+        }
+        
+        .confirm-btn {
+            background: linear-gradient(135deg, var(--secondary), #34d399);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        .confirm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ */
+        .confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .confirmation-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .confirmation-header {
+            padding: 28px 24px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+        
+        .confirmation-close-btn {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            color: var(--light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .confirmation-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .confirmation-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .confirmation-content {
+            padding: 24px;
+            text-align: center;
+        }
+        
+        .confirmation-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+        }
+        
+        .confirmation-message {
+            font-size: 17px;
+            color: var(--light);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        
+        .confirmation-note {
+            font-size: 15px;
+            color: var(--gray);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+        
+        .confirmation-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .close-confirmation-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .close-confirmation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+        
+        .payment-footer {
+            padding: 20px 24px 28px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        
+        .footer-note {
+            font-size: 14px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .footer-note i {
+            color: var(--secondary);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ -->
+        <div class="profile-section" id="profileSection">
+            <div class="profile-avatar" id="profileAvatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="profile-info">
+                <div class="profile-name" id="profileName">Гость</div>
+                <div class="profile-username" id="profileUsername">@username</div>
+                <div class="profile-uid">
+                    <i class="fas fa-id-card"></i>
+                    <span>UID: <span id="userUID">1000</span></span>
+                </div>
+            </div>
+            <div class="subscription-status">
+                <i class="fas fa-times"></i>
+                Подписки нету:(
+            </div>
+        </div>
+        
+        <!-- ЗАГОЛОВОК -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h1 class="title">Plutonium Premium</h1>
+            <div class="nonroot-badge">nonroot</div>
+            <p class="subtitle">Полный доступ ко всем функциям</p>
+        </div>
+        
+        <!-- ВЫБОР ТАРИФА -->
+        <div class="tariff-section">
+            <div class="tariff-title">
+                <i class="fas fa-crown"></i>
+                <span>Выберите вариант</span>
+            </div>
+            
+            <div class="tariff-cards">
+                <!-- 7 ДНЕЙ -->
+                <div class="tariff-card selected" data-plan="7">
+                    <div class="tariff-info">
+                        <div class="tariff-period">
+                            <i class="fas fa-hourglass-half"></i>
+                            7 дней
+                        </div>
+                        <div class="tariff-description">Короткий период</div>
+                    </div>
+                    <div class="tariff-price">
+                        <div class="price-amount">199 ₽</div>
+                        <div class="price-note">одноразовый платёж</div>
+                    </div>
+                    <div class="tariff-badge">Надёжный</div>
+                </div>
+                
+                <!-- 30 ДНЕЙ -->
+                <div class="tariff-card" data-plan="30">
+                    <div class="tariff-info">
+                        <div class="tariff-period">
+                            <i class="fas fa-calendar-alt"></i>
+                            30 дней
+                        </div>
+                        <div class="tariff-description">Стандартный доступ</div>
+                    </div>
+                    <div class="tariff-price">
+                        <div class="price-amount">449 ₽</div>
+                        <div class="price-note">экономия 36%</div>
+                    </div>
+                    <div class="tariff-badge">Популярный</div>
+                </div>
+                
+                <!-- НАВСЕГДА -->
+                <div class="tariff-card" data-plan="forever">
+                    <div class="tariff-info">
+                        <div class="tariff-period">
+                            <i class="fas fa-infinity"></i>
+                            Навсегда
+                        </div>
+                        <div class="tariff-description">Пожизненный доступ</div>
+                    </div>
+                    <div class="tariff-price">
+                        <div class="price-amount">949 ₽</div>
+                        <div class="price-note">экономия 68%</div>
+                    </div>
+                    <div class="tariff-badge savings-badge">Выгодно</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- БОЛЬШАЯ КНОПКА -->
+        <div class="main-action">
+            <button class="primary-btn" id="buyButton" onclick="openPaymentModal()">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Купить за 199 ₽</span>
+            </button>
+        </div>
+        
+        <!-- ПЛАТЕЖНОЕ МОДАЛЬНОЕ ОКНО -->
+        <div class="payment-modal" id="paymentModal">
+            <div class="payment-card">
+                <div class="payment-header">
+                    <button class="close-btn" onclick="closePaymentModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <h2 class="payment-title">Оплата</h2>
+                    <p class="payment-subtitle">Переведите сумму на карту Тинькофф</p>
+                </div>
+                
+                <div class="payment-content">
+                    <div class="order-summary">
+                        <span class="summary-label">Сумма к оплате</span>
+                        <div class="summary-amount" id="paymentAmount">199 ₽</div>
+                        <div class="summary-period" id="paymentPeriod">за 7 дней доступа</div>
+                    </div>
+                    
+                    <div class="payment-instruction">
+                        <div class="instruction-title">
+                            <i class="fas fa-list-ol"></i>
+                            <span>Простая инструкция</span>
+                        </div>
+                        <div class="instruction-steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Скопируйте <strong>номер карты</strong> ниже</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Переведите <strong id="stepAmount">199 ₽</strong> в своём банке</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Нажмите <strong>"Я ОПЛАТИЛ"</strong> и пришлите скрин оплаты</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- БАНКОВСКАЯ КАРТА -->
+                    <div class="bank-card">
+                        <div class="bank-header">
+                            <div class="bank-logo">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <div class="bank-info">
+                                <h3>Тинькофф Банк</h3>
+                                <p>Перевод на карту</p>
+                            </div>
+                        </div>
+                        
+                        <!-- НОМЕР КАРТЫ -->
+                        <div class="card-number-single" id="cardNumberSingle" onclick="copyCardNumber()">
+                            <span>2200 7012 0398 1698</span>
+                            <i class="far fa-copy copy-icon"></i>
+                            <div class="copy-indicator">Скопировано!</div>
+                        </div>
+                        
+                        <!-- ПОЛУЧАТЕЛИ -->
+                        <div class="recipients-section">
+                            <div class="recipients-title">
+                                <i class="fas fa-user"></i>
+                                <span>Получатель:</span>
+                            </div>
+                            <div class="recipient-item">
+                                <div class="recipient-names">Кирилл Ч. / Ирина Ч.</div>
+                                <div class="recipient-note">Карта указана выше</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-actions">
+                        <button class="confirm-btn" onclick="showConfirmation()">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Я ОПЛАТИЛ</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="payment-footer">
+                    <div class="footer-note">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>После проверки оплаты файл и ключ придут в этот чат в течение 5 минут</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ -->
+        <div class="confirmation-modal" id="confirmationModal">
+            <div class="confirmation-card">
+                <div class="confirmation-header">
+                    <button class="confirmation-close-btn" onclick="closeConfirmationModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <h2 class="confirmation-title">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Информация</span>
+                    </h2>
+                </div>
+                
+                <div class="confirmation-content">
+                    <div class="confirmation-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="confirmation-message">
+                        Если вы оплатили, пришлите скрины оплаты в этого бота
+                    </div>
+                    <div class="confirmation-note">
+                        После получения скриншота бот проверит оплату и отправит вам:<br>
+                        ключ и файл в течение 5 минут
                     </div>
                     
                     <div class="confirmation-actions">
@@ -1254,4 +2306,139 @@
         }
     </script>
 </body>
-    </html>
+</html>￼Enter                    </div>
+                    
+                    <div class="confirmation-actions">
+                        <button class="close-confirmation-btn" onclick="closeConfirmationModal()">
+                            <i class="fas fa-check"></i>
+                            <span>ПОНЯТНО</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Telegram Web App инициализация
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.setHeaderColor('#0f172a');
+        tg.setBackgroundColor('#0f172a');
+        
+        // Данные пользователя
+        const user = tg.initDataUnsafe.user;
+        let selectedPlan = '7';
+        
+        // Цены и периоды
+        const plans = {
+            '7': { price: 199, name: '7 дней', period: '7 дней доступа' },
+            '30': { price: 449, name: '30 дней', period: '30 дней доступа' },
+            'forever': { price: 949, name: 'Навсегда', period: 'постоянный доступ' }
+        };
+        
+        // Инициализация профиля
+        function initProfile() {
+            if (user) {
+                // Обновляем имя
+                if (user.first_name || user.last_name) {
+                    const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+                    document.getElementById('profileName').textContent = fullName;
+                }
+                
+                // Обновляем юзернейм
+                if (user.username) {
+                    document.getElementById('profileUsername').textContent = `@${user.username}`;
+                } else {
+                    document.getElementById('profileUsername').style.display = 'none';
+                }
+                
+                // Обновляем аватар
+                if (user.photo_url) {
+                    const avatarElement = document.getElementById('profileAvatar');
+                    avatarElement.innerHTML = `<img src="${user.photo_url}" alt="Аватар">`;
+                }
+                
+                // Генерируем или получаем UID
+                let userId = user.id.toString();
+                let uid = getOrCreateUID(userId);
+                
+                // Обновляем UID в интерфейсе
+                document.getElementById('userUID').textContent = uid;
+            }
+        }
+        
+        // Система UID
+        function getOrCreateUID(telegramId) {
+            const storageKey = 'user_uid_mapping';
+            let uidMapping = JSON.parse(localStorage.getItem(storageKey)) || {};
+            
+            // Если у пользователя уже есть UID, возвращаем его
+      if (uidMapping[telegramId]) {
+                return uidMapping[telegramId];
+            }
+            
+            // Генерируем новый UID
+            let lastUID = parseInt(localStorage.getItem('last_uid')) || 1000;
+            let newUID = lastUID + 1;
+            
+            // Сохраняем новый UID
+            uidMapping[telegramId] = newUID;
+            localStorage.setItem(storageKey, JSON.stringify(uidMapping));
+            localStorage.setItem('last_uid', newUID.toString());
+            
+            return newUID;
+        }
+        
+        // Выбор тарифа
+        document.querySelectorAll('.tariff-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Убрать выделение со всех
+                document.querySelectorAll('.tariff-card').forEach(c => {
+                    c.classList.remove('selected');
+                });
+                
+                // Выделить выбранный
+                this.classList.add('selected');
+                
+                // Обновить выбранный план
+                selectedPlan = this.getAttribute('data-plan');
+                
+                // Обновить кнопку
+                updateBuyButton();
+            });
+        });
+        
+        // Обновление кнопки покупки
+        function updateBuyButton() {
+            const plan = plans[selectedPlan];
+            const buyButton = document.getElementById('buyButton');
+            buyButton.innerHTML = `<i class="fas fa-shopping-cart"></i><span>Купить за ${plan.price} ₽</span>`;
+        }
+        
+        // Открытие модального окна оплаты
+        function openPaymentModal() {
+            const plan = plans[selectedPlan];
+            
+            // Обновить информацию в модалке
+            document.getElementById('paymentAmount').textContent = `${plan.price} ₽`;
+            document.getElementById('paymentPeriod').textContent = `за ${plan.period}`;
+            document.getElementById('stepAmount').textContent = `${plan.price} ₽`;
+            
+            // Показать модалку
+            document.getElementById('paymentModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Закрытие модального окна оплаты
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Копирование номера карты
+        function copyCardNumber() {
+            const cardNumber = '2200701203981698';
+            
+            // Копировать в буфер обмена
+            navigator.clipboard.writeText(cardNumber).then(() => {
