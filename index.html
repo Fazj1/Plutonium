@@ -772,41 +772,6 @@
             color: var(--success);
         }
         
-        /* ПОЛУЧАТЕЛИ В СТОЛБИК БЕЗ НАДПИСИ */
-        .recipients-section {
-            margin-top: 20px;
-        }
-        
-        .recipients-title {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--light);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .recipients-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .recipient-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 16px;
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-        
-        .recipient-names {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--secondary);
-        }
-        
         /* ACTION BUTTONS */
         .payment-actions {
             display: flex;
@@ -1211,22 +1176,6 @@
                             <i class="far fa-copy copy-icon"></i>
                             <div class="copy-indicator">Скопировано!</div>
                         </div>
-                        
-                        <!-- ПОЛУЧАТЕЛИ В СТОЛБИК БЕЗ НАДПИСИ -->
-                        <div class="recipients-section">
-                            <div class="recipients-title">
-                                <i class="fas fa-user"></i>
-                                <span>Получатели:</span>
-                            </div>
-                            <div class="recipients-list">
-                                <div class="recipient-item">
-                                    <div class="recipient-names">Кирилл Ч.</div>
-                                </div>
-                                <div class="recipient-item">
-                                    <div class="recipient-names">Ирина Ч.</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     
                     <div class="payment-actions">
@@ -1403,7 +1352,7 @@
             document.body.style.overflow = 'auto';
         }
         
-        // СТАРОЕ КОПИРОВАНИЕ КАРТЫ (как в первой версии)
+        // СТАРОЕ КОПИРОВАНИЮ КАРТЫ (как в первой версии)
         function copyCardNumber() {
             const cardNumber = '2200701203981698';
             
@@ -1505,7 +1454,7 @@
         
         // ВСЕ ОТЗЫВЫ (23 шт)
         function getAllReviews() {
-            // Список ников (первые 13 старые, следующие 10 новые)
+            // Список ников
             const nicknames = [
                 ".",
                 "v1zzob",
@@ -1566,7 +1515,7 @@
                 return firstChar.toUpperCase();
             });
             
-            // Генерируем даты с интервалом 2-5 дней, от сегодня в прошлое
+            // Генерируем даты
             const today = new Date();
             let daysOffset = 0;
             const reviewsWithDates = [];
@@ -1586,7 +1535,7 @@
                     nickname: nicknames[i],
                     initial: initials[i],
                     date: formattedDate,
-                    dateRaw: date, // для сортировки
+                    dateRaw: date,
                     content: reviews[i]
                 });
             }
