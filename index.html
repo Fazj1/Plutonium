@@ -26,6 +26,11 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
@@ -44,7 +49,6 @@
             overflow-x: hidden;
         }
         
-        /* ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ */
         .profile-section {
             padding: 20px;
             display: flex;
@@ -105,7 +109,6 @@
             color: var(--primary);
         }
         
-        /* НАДПИСЬ "ПОДПИСКИ НЕТУ" */
         .subscription-status {
             position: absolute;
             right: 20px;
@@ -127,7 +130,6 @@
             font-size: 10px;
         }
         
-        /* HEADER */
         .header {
             padding: 24px 20px 16px;
             text-align: center;
@@ -177,7 +179,6 @@
             margin: 0 auto;
         }
         
-        /* КОМПАКТНЫЕ КАРТОЧКИ ТАРИФОВ */
         .tariff-section {
             padding: 24px 20px 20px;
         }
@@ -289,7 +290,6 @@
             background: linear-gradient(135deg, #f59e0b, #fbbf24);
         }
         
-        /* БОЛЬШАЯ КНОПКА */
         .main-action {
             padding: 20px;
             border-top: 1px solid var(--border);
@@ -324,7 +324,6 @@
             transform: translateY(0);
         }
         
-        /* РАЗДЕЛ С ОТЗЫВАМИ */
         .reviews-section {
             padding: 24px 20px;
             border-top: 1px solid var(--border);
@@ -408,13 +407,6 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
         }
         
-        .review-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        
         .reviewer-info {
             display: flex;
             align-items: center;
@@ -482,7 +474,7 @@
             color: var(--secondary);
         }
         
-        /* ПЛАТЕЖНОЕ МОДАЛЬНОЕ ОКНО */
+        /* МОДАЛКА ОПЛАТЫ (ФИКС КРЕСТИКА И ШАПКИ) */
         .payment-modal {
             position: fixed;
             top: 0;
@@ -506,32 +498,30 @@
             max-width: 420px;
             max-height: 90vh;
             overflow-y: auto;
+            position: relative;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
             animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .payment-header {
-            padding: 28px 24px 20px;
-            text-align: center;
-            border-bottom: 1px solid var(--border);
-            position: relative;
+            padding: 24px 24px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .payment-header-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
         
         .close-btn {
-            position: absolute;
-            top: 24px;
-            right: 24px;
             background: rgba(255, 255, 255, 0.1);
             border: none;
             width: 36px;
@@ -543,36 +533,32 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
         
-        .close-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
+        .close-btn:hover { background: rgba(255, 255, 255, 0.2); }
         
         .payment-title {
             font-size: 24px;
             font-weight: 700;
-            margin-bottom: 8px;
             color: var(--light);
+            margin: 0;
         }
         
         .payment-subtitle {
             font-size: 15px;
             color: var(--gray);
-            max-width: 300px;
-            margin: 0 auto;
+            margin: 0;
         }
         
-        .payment-content {
-            padding: 24px;
-        }
+        .payment-content { padding: 12px 24px 24px; }
         
         .order-summary {
             background: rgba(16, 185, 129, 0.1);
             border: 1px solid rgba(16, 185, 129, 0.2);
             border-radius: 16px;
             padding: 20px;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             text-align: center;
         }
         
@@ -596,10 +582,86 @@
             color: var(--gray);
             font-weight: 500;
         }
-        
-        .payment-instruction {
-            margin-bottom: 28px;
+
+        .promo-container {
+            margin-bottom: 14px;
         }
+
+        .promo-input-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 3px 4px;
+            height: 40px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .promo-input-group:focus-within {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .promo-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 0 8px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            outline: none;
+            height: 100%;
+            user-select: text;
+        }
+        
+        .promo-input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+            text-transform: none;
+            font-weight: 500;
+        }
+
+        .promo-btn {
+            background: linear-gradient(135deg, #4f46e5, #3730a3);
+            color: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 9px;
+            padding: 0 14px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .promo-btn:hover {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .promo-msg {
+            font-size: 11px;
+            margin-top: 4px;
+            padding-left: 6px;
+            display: none;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .promo-msg.success { color: var(--secondary); display: flex; }
+        .promo-msg.error { color: #ef4444; display: flex; }
+        
+        .payment-instruction { margin-bottom: 24px; }
         
         .instruction-title {
             font-size: 16px;
@@ -614,14 +676,14 @@
         .instruction-steps {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
         
         .step {
             display: flex;
             align-items: center;
             gap: 16px;
-            padding: 16px;
+            padding: 14px 16px;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
             border: 1px solid var(--border);
@@ -646,19 +708,17 @@
             color: var(--light);
         }
         
-        .step-text strong {
-            color: var(--secondary);
-        }
+        .step-text strong { color: var(--secondary); }
         
-        /* TINKOFF CARD */
         .bank-card {
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            background: linear-gradient(135deg, #111111, #1e1e1e);
             border-radius: 20px;
             padding: 24px;
-            margin: 28px 0;
-            border: 1px solid rgba(255, 107, 0, 0.3);
+            margin: 20px 0;
+            border: 1px solid rgba(255, 107, 0, 0.2);
             position: relative;
             overflow: hidden;
+            transition: border-color 0.4s ease;
         }
         
         .bank-card::before {
@@ -668,7 +728,7 @@
             right: 0;
             width: 100px;
             height: 100px;
-            background: linear-gradient(135deg, rgba(255, 107, 0, 0.1), transparent);
+            background: linear-gradient(135deg, rgba(255, 107, 0, 0.08), transparent);
             border-radius: 0 0 0 100px;
         }
         
@@ -703,81 +763,63 @@
             color: var(--gray);
         }
         
-        /* ВОЗВРАТ К СТАРОМУ КОПИРОВАНИЮ КАРТЫ */
         .card-number-single {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 18px;
             font-size: 22px;
             font-weight: 600;
             letter-spacing: 2px;
             text-align: center;
             color: white;
             font-family: 'Courier New', monospace;
-            margin: 20px 0;
+            margin-top: 10px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-        }
-        
-        .card-number-single:hover {
-            background: rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 107, 0, 0.5);
-            transform: translateY(-2px);
+            gap: 10px;
         }
         
         .card-number-single.copied {
-            background: rgba(16, 185, 129, 0.2);
+            background: rgba(16, 185, 129, 0.08);
             border-color: var(--secondary);
             color: var(--secondary);
         }
         
         .copy-indicator {
             position: absolute;
-            top: -10px;
-            right: 10px;
-            background: var(--success);
+            top: -26px;
+            background: var(--secondary);
             color: white;
             padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
             opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.3s;
+            transform: translateY(10px) scale(0.9);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
         }
         
         .card-number-single.copied .copy-indicator {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         
         .copy-icon {
-            font-size: 18px;
-            opacity: 0.7;
-            transition: all 0.3s;
+            font-size: 16px;
+            opacity: 0.6;
         }
         
-        .card-number-single:hover .copy-icon {
-            opacity: 1;
-        }
-        
-        .card-number-single.copied .copy-icon {
-            color: var(--success);
-        }
-        
-        /* ACTION BUTTONS */
         .payment-actions {
             display: flex;
             flex-direction: column;
             gap: 16px;
-            margin-top: 28px;
+            margin-top: 24px;
         }
         
         .confirm-btn {
@@ -802,7 +844,6 @@
             box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
         }
         
-        /* МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ */
         .confirmation-modal {
             position: fixed;
             top: 0;
@@ -853,9 +894,7 @@
             transition: all 0.2s;
         }
         
-        .confirmation-close-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
+        .confirmation-close-btn:hover { background: rgba(255, 255, 255, 0.2); }
         
         .confirmation-title {
             font-size: 22px;
@@ -942,57 +981,23 @@
             gap: 8px;
         }
         
-        .footer-note i {
-            color: var(--secondary);
-        }
+        .footer-note i { color: var(--secondary); }
         
-        /* SCROLLBAR STYLES */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
         
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 3px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
-        }
-        
-        /* АДАПТИВНОСТЬ */
         @media (max-width: 480px) {
-            .card-number-single {
-                font-size: 18px;
-                letter-spacing: 1px;
-            }
-            
-            .summary-amount {
-                font-size: 32px;
-            }
-            
-            .title {
-                font-size: 24px;
-            }
-            
-            .price-amount {
-                font-size: 20px;
-            }
-            
-            .reviewer-name {
-                font-size: 14px;
-            }
+            .card-number-single { font-size: 18px; letter-spacing: 1px; }
+            .summary-amount { font-size: 32px; }
+            .title { font-size: 24px; }
+            .price-amount { font-size: 20px; }
+            .reviewer-name { font-size: 14px; }
         }
     </style>
 </head>
 <body>
     <div class="app">
-        <!-- ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ -->
         <div class="profile-section" id="profileSection">
             <div class="profile-avatar" id="profileAvatar">
                 <i class="fas fa-user"></i>
@@ -1011,7 +1016,6 @@
             </div>
         </div>
         
-        <!-- ЗАГОЛОВОК -->
         <div class="header">
             <div class="logo">
                 <i class="fas fa-bolt"></i>
@@ -1021,7 +1025,6 @@
             <p class="subtitle">Полный доступ ко всем функциям</p>
         </div>
         
-        <!-- ВЫБОР ТАРИФА -->
         <div class="tariff-section">
             <div class="tariff-title">
                 <i class="fas fa-crown"></i>
@@ -1029,7 +1032,6 @@
             </div>
             
             <div class="tariff-cards">
-                <!-- 7 ДНЕЙ -->
                 <div class="tariff-card selected" data-plan="7">
                     <div class="tariff-info">
                         <div class="tariff-period">
@@ -1045,7 +1047,6 @@
                     <div class="tariff-badge">Надёжный</div>
                 </div>
                 
-                <!-- 30 ДНЕЙ -->
                 <div class="tariff-card" data-plan="30">
                     <div class="tariff-info">
                         <div class="tariff-period">
@@ -1061,7 +1062,6 @@
                     <div class="tariff-badge">Популярный</div>
                 </div>
                 
-                <!-- НАВСЕГДА -->
                 <div class="tariff-card" data-plan="forever">
                     <div class="tariff-info">
                         <div class="tariff-period">
@@ -1079,7 +1079,6 @@
             </div>
         </div>
         
-        <!-- БОЛЬШАЯ КНОПКА -->
         <div class="main-action">
             <button class="primary-btn" id="buyButton" onclick="openPaymentModal()">
                 <i class="fas fa-shopping-cart"></i>
@@ -1087,7 +1086,6 @@
             </button>
         </div>
         
-        <!-- РАЗДЕЛ С ОТЗЫВАМИ -->
         <div class="reviews-section">
             <div class="reviews-header">
                 <div class="reviews-title">
@@ -1109,9 +1107,7 @@
                 </div>
             </div>
             
-            <div class="reviews-container" id="reviewsContainer">
-                <!-- Отзывы будут добавлены через JavaScript -->
-            </div>
+            <div class="reviews-container" id="reviewsContainer"></div>
             
             <div class="review-note">
                 <i class="fas fa-lock"></i>
@@ -1119,15 +1115,16 @@
             </div>
         </div>
         
-        <!-- ПЛАТЕЖНОЕ МОДАЛЬНОЕ ОКНО -->
         <div class="payment-modal" id="paymentModal">
             <div class="payment-card">
                 <div class="payment-header">
+                    <div class="payment-header-text">
+                        <h2 class="payment-title">Оплата</h2>
+                        <p class="payment-subtitle">Переведите сумму на карту Тинькофф</p>
+                    </div>
                     <button class="close-btn" onclick="closePaymentModal()">
                         <i class="fas fa-times"></i>
                     </button>
-                    <h2 class="payment-title">Оплата</h2>
-                    <p class="payment-subtitle">Переведите сумму на карту Тинькофф</p>
                 </div>
                 
                 <div class="payment-content">
@@ -1135,6 +1132,14 @@
                         <span class="summary-label">Сумма к оплате</span>
                         <div class="summary-amount" id="paymentAmount">199 ₽</div>
                         <div class="summary-period" id="paymentPeriod">за 7 дней доступа</div>
+                    </div>
+
+                    <div class="promo-container">
+                        <div class="promo-input-group">
+                            <input type="text" class="promo-input" id="promoInput" placeholder="Промокод (если есть)">
+                            <button class="promo-btn" onclick="applyPromoCode()">Ввод</button>
+                        </div>
+                        <div class="promo-msg" id="promoMessage"></div>
                     </div>
                     
                     <div class="payment-instruction">
@@ -1158,8 +1163,7 @@
                         </div>
                     </div>
                     
-                    <!-- БАНКОВСКАЯ КАРТА -->
-                    <div class="bank-card">
+                    <div class="bank-card" id="bankCardContainer">
                         <div class="bank-header">
                             <div class="bank-logo">
                                 <i class="fas fa-university"></i>
@@ -1170,10 +1174,9 @@
                             </div>
                         </div>
                         
-                        <!-- ВОЗВРАТ К СТАРОМУ КОПИРОВАНИЮ КАРТЫ -->
                         <div class="card-number-single" id="cardNumberSingle" onclick="copyCardNumber()">
                             <span>2200 7012 0398 1698</span>
-                            <i class="far fa-copy copy-icon"></i>
+                            <i class="far fa-copy copy-icon" id="copyIcon"></i>
                             <div class="copy-indicator">Скопировано!</div>
                         </div>
                     </div>
@@ -1189,13 +1192,12 @@
                 <div class="payment-footer">
                     <div class="footer-note">
                         <i class="fas fa-shield-alt"></i>
-                        <span>После проверки оплаты файл и ключ придут в этот чат в течение 5 минут</span>
+                        <span>Файл и ключ придут в чат в течение 5 минут</span>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ -->
         <div class="confirmation-modal" id="confirmationModal">
             <div class="confirmation-card">
                 <div class="confirmation-header">
@@ -1232,206 +1234,208 @@
     </div>
 
     <script>
-        // Telegram Web App инициализация
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.setHeaderColor('#0f172a');
         tg.setBackgroundColor('#0f172a');
         
-        // Данные пользователя
         const user = tg.initDataUnsafe.user;
         let selectedPlan = '7';
+        let isPromoApplied = false;
+        let appliedPromoName = 'NO_PROMO';
+        let activeDiscount = 0;
         
-        // Цены и периоды
+        const promoCodes = {
+            'PLUTONIUM15': 15,
+            'MAJOR': 15
+        };
+        
         const plans = {
             '7': { price: 199, name: '7 дней', period: '7 дней доступа' },
             '30': { price: 449, name: '30 дней', period: '30 дней доступа' },
             'forever': { price: 949, name: 'Навсегда', period: 'постоянный доступ' }
         };
         
-        // Инициализация профиля
         function initProfile() {
             if (user) {
-                // Обновляем имя
                 if (user.first_name || user.last_name) {
-                    const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-                    document.getElementById('profileName').textContent = fullName;
+                    document.getElementById('profileName').textContent = `${user.first_name || ''} ${user.last_name || ''}`.trim();
                 }
-                
-                // Обновляем юзернейм
                 if (user.username) {
                     document.getElementById('profileUsername').textContent = `@${user.username}`;
                 } else {
                     document.getElementById('profileUsername').style.display = 'none';
                 }
-                
-                // Обновляем аватар
                 if (user.photo_url) {
-                    const avatarElement = document.getElementById('profileAvatar');
-                    avatarElement.innerHTML = `<img src="${user.photo_url}" alt="Аватар">`;
+                    document.getElementById('profileAvatar').innerHTML = `<img src="${user.photo_url}" alt="Аватар">`;
                 }
-                
-                // Генерируем или получаем UID
-                let userId = user.id.toString();
-                let uid = getOrCreateUID(userId);
-                
-                // Обновляем UID в интерфейсе
-                document.getElementById('userUID').textContent = uid;
+                document.getElementById('userUID').textContent = getOrCreateUID(user.id.toString());
             }
         }
         
-        // Система UID
         function getOrCreateUID(telegramId) {
             const storageKey = 'user_uid_mapping';
             let uidMapping = JSON.parse(localStorage.getItem(storageKey)) || {};
+            if (uidMapping[telegramId]) return uidMapping[telegramId];
             
-            // Если у пользователя уже есть UID, возвращаем его
-            if (uidMapping[telegramId]) {
-                return uidMapping[telegramId];
-            }
-            
-            // Генерируем новый UID
             let lastUID = parseInt(localStorage.getItem('last_uid')) || 1000;
             let newUID = lastUID + 1;
-            
-            // Сохраняем новый UID
             uidMapping[telegramId] = newUID;
             localStorage.setItem(storageKey, JSON.stringify(uidMapping));
             localStorage.setItem('last_uid', newUID.toString());
-            
             return newUID;
         }
         
-        // Выбор тарифа
         document.querySelectorAll('.tariff-card').forEach(card => {
             card.addEventListener('click', function() {
-                // Убрать выделение со всех
-                document.querySelectorAll('.tariff-card').forEach(c => {
-                    c.classList.remove('selected');
-                });
-                
-                // Выделить выбранный
+                document.querySelectorAll('.tariff-card').forEach(c => c.classList.remove('selected'));
                 this.classList.add('selected');
-                
-                // Обновить выбранный план
                 selectedPlan = this.getAttribute('data-plan');
-                
-                // Обновить кнопку
                 updateBuyButton();
             });
         });
         
-        // Обновление кнопки покупки
         function updateBuyButton() {
             const plan = plans[selectedPlan];
-            const buyButton = document.getElementById('buyButton');
-            buyButton.innerHTML = `<i class="fas fa-shopping-cart"></i><span>Купить за ${plan.price} ₽</span>`;
+            document.getElementById('buyButton').innerHTML = `<i class="fas fa-shopping-cart"></i><span>Купить за ${plan.price} ₽</span>`;
+        }
+
+        function getCurrentPrice() {
+            const basePrice = plans[selectedPlan].price;
+            return isPromoApplied ? Math.round(basePrice * (1 - activeDiscount / 100)) : basePrice;
+        }
+
+        function applyPromoCode() {
+            const input = document.getElementById('promoInput').value.trim().toUpperCase();
+            const msgElement = document.getElementById('promoMessage');
+            
+            if (promoCodes.hasOwnProperty(input)) {
+                isPromoApplied = true;
+                activeDiscount = promoCodes[input];
+                appliedPromoName = input;
+                
+                msgElement.className = 'promo-msg success';
+                msgElement.innerHTML = `<i class="fas fa-check-circle"></i> Скидка ${activeDiscount}% по коду ${input}`;
+                tg.HapticFeedback.notificationOccurred('success');
+            } else {
+                isPromoApplied = false;
+                activeDiscount = 0;
+                appliedPromoName = 'NO_PROMO';
+                
+                msgElement.className = 'promo-msg error';
+                msgElement.innerHTML = `<i class="fas fa-times-circle"></i> Неверный промокод`;
+                tg.HapticFeedback.notificationOccurred('error');
+            }
+            
+            const finalPrice = getCurrentPrice();
+            document.getElementById('paymentAmount').textContent = `${finalPrice} ₽`;
+            document.getElementById('stepAmount').textContent = `${finalPrice} ₽`;
         }
         
-        // Открытие модального окна оплаты
         function openPaymentModal() {
             const plan = plans[selectedPlan];
+            isPromoApplied = false;
+            activeDiscount = 0;
+            appliedPromoName = 'NO_PROMO';
+            document.getElementById('promoInput').value = '';
             
-            // Обновить информацию в модалке
-            document.getElementById('paymentAmount').textContent = `${plan.price} ₽`;
+            const msgElement = document.getElementById('promoMessage');
+            msgElement.className = 'promo-msg';
+            msgElement.style.display = 'none';
+
+            const finalPrice = getCurrentPrice();
+            document.getElementById('paymentAmount').textContent = `${finalPrice} ₽`;
             document.getElementById('paymentPeriod').textContent = `за ${plan.period}`;
-            document.getElementById('stepAmount').textContent = `${plan.price} ₽`;
+            document.getElementById('stepAmount').textContent = `${finalPrice} ₽`;
             
-            // Сбросить состояние копирования
             const cardElement = document.getElementById('cardNumberSingle');
+            const cardContainer = document.getElementById('bankCardContainer');
+            const iconElement = document.getElementById('copyIcon');
             cardElement.classList.remove('copied');
+            cardContainer.style.borderColor = 'rgba(255, 107, 0, 0.2)';
+            iconElement.className = 'far fa-copy copy-icon';
             
-            // Показать модалку
             document.getElementById('paymentModal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
         
-        // Закрытие модального окна оплаты
         function closePaymentModal() {
             document.getElementById('paymentModal').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
         
-        // СТАРОЕ КОПИРОВАНИЮ КАРТЫ (как в первой версии)
         function copyCardNumber() {
             const cardNumber = '2200701203981698';
+            const cardElement = document.getElementById('cardNumberSingle');
+            const cardContainer = document.getElementById('bankCardContainer');
+            const iconElement = document.getElementById('copyIcon');
             
-            // Копировать в буфер обмена
-            navigator.clipboard.writeText(cardNumber).then(() => {
-                // Визуальная обратная связь
-                const cardElement = document.getElementById('cardNumberSingle');
-                
-                cardElement.classList.add('copied');
-                
-                // Тактильная обратная связь
+            // Надежный способ копирования в WebView с использованием textarea
+            const el = document.createElement('textarea');
+            el.value = cardNumber;
+            el.setAttribute('readonly', '');
+            el.style.position = 'absolute';
+            el.style.left = '-9999px';
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            cardElement.classList.add('copied');
+            cardContainer.style.borderColor = 'var(--secondary)';
+            iconElement.className = 'fas fa-check copy-icon';
+            
+            if (tg.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred('medium');
-                
-                // Сбросить через 3 секунды
-                setTimeout(() => {
-                    cardElement.classList.remove('copied');
-                }, 3000);
-            });
+            }
+            
+            setTimeout(() => {
+                cardElement.classList.remove('copied');
+                cardContainer.style.borderColor = 'rgba(255, 107, 0, 0.2)';
+                iconElement.className = 'far fa-copy copy-icon';
+            }, 2500);
         }
         
-        // Показать модальное окно подтверждения
         function showConfirmation() {
             try {
-                // Закрыть платежное окно
                 closePaymentModal();
-                
-                // Показать окно подтверждения
                 document.getElementById('confirmationModal').style.display = 'flex';
                 document.body.style.overflow = 'hidden';
-                
-                // Тактильная обратная связь
                 tg.HapticFeedback.impactOccurred('light');
                 
                 const plan = plans[selectedPlan];
+                const finalPrice = getCurrentPrice();
                 const userUID = document.getElementById('userUID').textContent;
                 const userName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : 'Гость';
                 const userUsername = user ? user.username : 'unknown';
                 const userId = user ? user.id : 'unknown';
+                const promoStatus = isPromoApplied ? `PROMO_USED_${appliedPromoName}` : 'NO_PROMO';
                 
-                // Создаем строку данных для отправки
-                const dataString = `payment_confirmed|${selectedPlan}|${plan.price}|${plan.name}|${userId}|${userName}|${userUsername}|${userUID}|${Date.now()}|2200701203981698|Кирилл Ч. / Ирина Ч.`;
-                
-                // Отправляем данные в Telegram бота (корректный способ)
-                console.log('Отправка данных боту:', dataString);
+                const dataString = `payment_confirmed|${selectedPlan}|${finalPrice}|${plan.name}|${userId}|${userName}|${userUsername}|${userUID}|${Date.now()}|2200701203981698|Кирилл Ч. / Ирина Ч.|${promoStatus}`;
                 tg.sendData(dataString);
-                
             } catch (error) {
-                console.error('Ошибка при отправке данных:', error);
-                // Если есть ошибка, просто показываем окно подтверждения
                 document.getElementById('confirmationModal').style.display = 'flex';
                 document.body.style.overflow = 'hidden';
             }
         }
         
-        // Закрыть модальное окно подтверждения
         function closeConfirmationModal() {
             document.getElementById('confirmationModal').style.display = 'none';
             document.body.style.overflow = 'auto';
-            
-            // Закрыть приложение через 1 секунду
-            setTimeout(() => {
-                tg.close();
-            }, 1000);
+            setTimeout(() => tg.close(), 1000);
         }
         
-        // ГЕНЕРАЦИЯ ОТЗЫВОВ С КОНКРЕТНЫМИ НИКАМИ
         function generateReviews() {
             const reviewsContainer = document.getElementById('reviewsContainer');
-            reviewsContainer.innerHTML = ''; // очищаем
+            reviewsContainer.innerHTML = '';
             const reviewsData = getAllReviews();
-            
-            // Сортируем по дате (новые сверху)
             reviewsData.sort((a, b) => new Date(b.dateRaw) - new Date(a.dateRaw));
             
             reviewsData.forEach(review => {
                 const reviewItem = document.createElement('div');
                 reviewItem.className = 'review-item';
                 reviewItem.innerHTML = `
-                    <div class="review-header">
+                    <div class="review-header" style="display:flex; align-items:center; justify-content:between; margin-bottom:16px;">
                         <div class="reviewer-info">
                             <div class="reviewer-avatar">${review.initial}</div>
                             <div>
@@ -1439,126 +1443,41 @@
                                 <div class="review-date">${review.date}</div>
                             </div>
                         </div>
-                        <div class="review-rating">
-                            ${'<i class="fas fa-star"></i>'.repeat(5)}
-                        </div>
+                        <div class="review-rating">${'<i class="fas fa-star"></i>'.repeat(5)}</div>
                     </div>
                     <div class="review-content">${review.content}</div>
                 `;
                 reviewsContainer.appendChild(reviewItem);
             });
-            
-            // Обновляем счетчик отзывов
             document.getElementById('totalReviewsCount').textContent = `(${reviewsData.length} отзывов)`;
         }
         
-        // ВСЕ ОТЗЫВЫ (23 шт)
         function getAllReviews() {
-            // Список ников
-            const nicknames = [
-                ".",
-                "v1zzob",
-                "vðşþŋĥ",
-                "wizer",
-                "topor4ik",
-                "хуй",
-                "chil hydra",
-                "..,",
-                "Z - слава россии",
-                "negr",
-                ".",
-                "наzdaa",
-                "deloptr",
-                "Neski",
-                "Max",
-                "даниар",
-                "crimsoncurce",
-                "vaneks",
-                "nich",
-                ",",
-                "Taburetka)",
-                "goose"
-            ];
+            const nicknames = [".", "v1zzob", "vðşþŋĥ", "wizer", "topor4ik", "chil hydra", "..,", "Z - слава россии", "negr", ".", "наzdaa", "deloptr", "Neski", "Max", "даниар", "crimsoncurce", "vaneks", "nich", ",", "Taburetka)", "goose"];
+            const reviews = ["Кабанутый софт, спасибо плутониуму, дал возможность поиграть на ебанном хонор, где никакие софты до этого не воркали", "Лучший нон рут софт, беру уже второй раз только положительные эмоции, хороший скинчейджер, фризкилл и многие другие функции", "Купил чит все четко советую брать", "Берите не пожалеете Plutonium premium просто имба", "Один из лучших софтов, все стабильно и ровно", "Как всегда лучший", "Самый пиздатый чит, апнул элиту за 9 часов в мм", "Самый лучший чит без рут прав, я сам в шоке что есть такой софт и ишо без рут", "все норм", "ы", "имбудя", "для нонрут супер", "ахуеная поддержка", "топ", "Все работает отлично, спасибо за софт", "имба", "хорошо .поддержка норм", "быстро выдал поддержка супер", "софт пушка", "самый лучший нонрут чит. люблю вас", "imba", "спс"];
             
-            // Отзывы
-            const reviews = [
-                "Кабанутый софт, спасибо плутониуму, дал возможность поиграть на ебанном хонор, где никакие софты до этого не воркали",
-                "Лучший нон рут софт, беру уже второй раз только положительные эмоции, хороший скинчейджер, фризкилл и многие другие функции",
-                "Купил чит все четко советую брать",
-                "Берите не пожалеете Plutonium premium просто имба",
-                "Очень крутой софт, всем советую",
-                "Как всегда лучший",
-                "Самый пиздатый чит, апнул элиту за 9 часов в мм",
-                "Самый лучший чит без рут прав, я сам в шоке что есть такой софт и ишо без рут",
-                "все норм",
-                "ы",
-                "имбудя",
-                "для нонрут супер",
-                "ахуеная поддержка",
-                "топ",
-                "Все работает но чуть лагает на а21",
-                "имба",
-                "хорошо .поддержка норм",
-                "быстро выдал поддержка супер",
-                "пенис",
-                "самый лучший нонрут чит. люблю вас",
-                "imba",
-                "спс"
-            ];
-            
-            // Генерируем инициалы для аватарок
-            const initials = nicknames.map(nick => {
-                const firstChar = nick.charAt(0);
-                if (firstChar === '.' || firstChar === ',' || firstChar === ' ' || firstChar === '') {
-                    return nick.length > 1 ? nick.charAt(1).toUpperCase() : '?';
-                }
-                return firstChar.toUpperCase();
-            });
-            
-            // Генерируем даты
             const today = new Date();
             let daysOffset = 0;
-            const reviewsWithDates = [];
-            
-            for (let i = 0; i < nicknames.length; i++) {
+            return nicknames.map((nick, i) => {
                 const date = new Date(today);
-                daysOffset += Math.floor(Math.random() * 4) + 2; // 2-5 дней
+                daysOffset += Math.floor(Math.random() * 4) + 2;
                 date.setDate(today.getDate() - daysOffset);
-                
-                const formattedDate = date.toLocaleDateString('ru-RU', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                }) + ' г.';
-                
-                reviewsWithDates.push({
-                    nickname: nicknames[i],
-                    initial: initials[i],
-                    date: formattedDate,
+                const firstChar = nick.charAt(0);
+                const initial = (firstChar === '.' || firstChar === ',' || firstChar === ' ' || firstChar === '') ? (nick.length > 1 ? nick.charAt(1).toUpperCase() : '?') : firstChar.toUpperCase();
+                return {
+                    nickname: nick,
+                    initial: initial,
+                    // Исправлено: убрано дублирование "г."
+                    date: date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }),
                     dateRaw: date,
                     content: reviews[i]
-                });
-            }
-            
-            return reviewsWithDates;
+                };
+            });
         }
         
-        // Инициализация
         initProfile();
         updateBuyButton();
         generateReviews();
-        
-        // Приветственное сообщение
-        if (!localStorage.getItem('welcome_shown')) {
-            setTimeout(() => {
-                tg.showPopup({
-                    title: '👋 Добро пожаловать в Plutonium Premium!',
-                    message: 'Выберите тариф, скопируйте номер карты, оплатите и пришлите скрин оплаты для получения ключа и файла.',
-                    buttons: [{id: 'ok', type: 'ok', text: 'Понятно!'}]
-                });
-                localStorage.setItem('welcome_shown', 'true');
-            }, 800);
-        }
     </script>
 </body>
 </html>
